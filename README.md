@@ -1,6 +1,6 @@
-# ResearchIQ 🔬
+# CertIQ 🎓
 
-> Multi-agent academic research assistant powered by Microsoft Foundry IQ
+> Multi-agent enterprise certification learning assistant powered by Microsoft Foundry IQ
 
 Built for the **Microsoft Agents League Hackathon 2026** — Reasoning Agents track.
 
@@ -8,53 +8,62 @@ Built for the **Microsoft Agents League Hackathon 2026** — Reasoning Agents tr
 
 ## What it does
 
-ResearchIQ takes any research question and routes it through a pipeline of specialized AI agents that work in parallel, retrieve grounded knowledge via **Microsoft Foundry IQ**, and produce a structured, cited answer — with a human approval gate before the final response is delivered.
+CertIQ helps organisations manage internal team certification programmes. A learner states their certification goal and role, and CertIQ routes it through a pipeline of specialised AI agents that work in parallel — grounding all knowledge retrieval through **Microsoft Foundry IQ** — to produce a capacity-aware study plan with a manager approval gate.
 
-**Example query:** *"What are the latest findings on transformer efficiency vs accuracy trade-offs?"*
+**Example:** *"I am a Cloud Engineer targeting AZ-204 in 4 weeks with 10 focus hours per week"*
 
-ResearchIQ returns a structured 5-section response with citations, reasoning trace, and a downloadable markdown report.
+CertIQ returns a structured study plan with learning path, readiness assessment, practice questions, milestones, and manager insights.
 
 ---
 
 ## Architecture
 
 ```
-User query
+Learner goal
     ↓
-Orchestrator agent       ← decomposes query into 3 sub-tasks
-    ↓              ↓
-Literature agent    Data agent     ← parallel retrieval via Foundry IQ
-         ↓         ↓
-       Synthesis agent             ← builds structured answer
+Orchestrator agent        ← decomposes goal into 3 parallel sub-tasks
+    ↓                ↓
+Learning Path Curator   Assessment Agent   ← parallel, both grounded via Foundry IQ
+         ↓             ↓
+       Study Plan Generator               ← capacity-aware plan from both agents
             ↓
-   Human-in-the-loop review       ← approve or reject before delivery
+   Manager review gate                   ← human-in-the-loop approval
             ↓
-   Final cited response
+   Final certified study plan
 ```
+
+---
+
+## Agents
+
+| Agent | Role |
+|---|---|
+| Orchestrator | Decomposes certification goal into 3 parallel sub-tasks |
+| Learning Path Curator | Retrieves grounded learning paths via Foundry IQ |
+| Assessment Agent | Evaluates readiness using learner data and work signals |
+| Study Plan Generator | Builds capacity-aware 5-section study plan |
+| Manager Review | Human-in-the-loop approval gate before delivery |
+| Format Node | Assembles final plan with full citation list |
 
 ---
 
 ## Microsoft IQ Integration
 
-All knowledge retrieval is grounded through **Foundry IQ**:
-
-- Connects to indexed enterprise sources
-- Enforces permissions per user
-- Returns cited, grounded answers
-- Reduces hallucination via source attribution
+| IQ Layer | Usage |
+|---|---|
+| Foundry IQ | Grounds all knowledge retrieval with citations from approved sources |
+| Work IQ | Work signals (meeting load, focus hours) inform study scheduling |
+| Fabric IQ | Semantic model for certifications, roles, skills, and readiness scores |
 
 ---
 
-## Agent breakdown
+## Synthetic Data
 
-| Agent | Role |
-|---|---|
-| Orchestrator | Decomposes research query into 3 parallel sub-tasks |
-| Literature agent | Retrieves and summarizes relevant papers via Foundry IQ |
-| Data agent | Extracts key statistics and empirical evidence via Foundry IQ |
-| Synthesis agent | Builds structured 5-section answer from both agents |
-| Human review | Interrupt gate — user approves before final delivery |
-| Format node | Assembles final response with full citation list |
+All learner data is synthetic and for demonstration only — no real PII or customer data.
+
+- Learner performance records (L-1001, L-1002, L-1003)
+- Work activity signals (EMP-001, EMP-002)
+- Certification semantic model (AZ-204, AZ-400, DP-203)
 
 ---
 
@@ -63,19 +72,18 @@ All knowledge retrieval is grounded through **Foundry IQ**:
 | Tool | Purpose |
 |---|---|
 | LangGraph | Agent orchestration + human-in-the-loop interrupt/resume |
-| Microsoft Foundry IQ | Grounded knowledge retrieval |
+| Microsoft Foundry IQ | Grounded knowledge retrieval with citations |
 | OpenAI gpt-4o-mini | LLM backbone for all agents |
-| Pydantic v2 | Structured state and output validation between agents |
+| Pydantic v2 | Structured state validation between agents |
 | Streamlit | Demo UI |
-| Python 3.13 | Runtime |
 
 ---
 
 ## Setup
 
 ```bash
-git clone https://github.com/sarvagna23/researchiq
-cd researchiq
+git clone https://github.com/sarvagna23/certiq
+cd certiq
 
 python3 -m venv venv
 source venv/bin/activate
@@ -83,47 +91,22 @@ source venv/bin/activate
 pip install -r requirements.txt
 
 cp .env.example .env
-# fill in your credentials in .env
+# fill in your credentials
 
 streamlit run app.py
 ```
 
 ---
 
-## Environment variables
+## Judging criteria
 
-```
-OPENAI_API_KEY=your-openai-key
-OPENAI_MODEL=gpt-4o-mini
-AZURE_AI_FOUNDRY_ENDPOINT=https://your-project.api.azureml.ms
-AZURE_AI_PROJECT_ID=your-project-id
-FOUNDRY_IQ_INDEX_NAME=research-index
-```
-
-> The app runs in mock mode automatically if Foundry IQ credentials are not set — useful for local development.
-
----
-
-## Demo
-
-1. Enter a research question
-2. Watch the 3 agents work in parallel (reasoning trace in sidebar)
-3. Review literature, data, and synthesis tabs
-4. Approve or reject the synthesis
-5. Download the final cited response as markdown
-
----
-
-## Judging criteria alignment
-
-| Criterion | How ResearchIQ addresses it |
+| Criterion | How CertIQ addresses it |
 |---|---|
-| Accuracy & Relevance (20%) | Foundry IQ grounds all retrieval with citations |
-| Reasoning & Multi-step (20%) | 4-agent pipeline with explicit reasoning trace |
-| Creativity & Originality (15%) | Human-in-the-loop approval gate + parallel agent fan-out |
-| User Experience (15%) | Clean Streamlit UI, tabbed results, download button |
-| Reliability & Safety (20%) | Pydantic validation, fallback mock mode, human approval gate |
-| Community vote (10%) | Join us on Discord |
+| Accuracy & Relevance (25%) | Foundry IQ grounds all retrieval with citations |
+| Reasoning & Multi-step (25%) | 5-agent pipeline with explicit reasoning trace |
+| Creativity & Originality (15%) | Parallel agents + manager approval gate + work signal integration |
+| User Experience (15%) | Pipeline progress bar, citation cards, download button |
+| Reliability & Safety (20%) | Pydantic validation, synthetic data only, human approval gate |
 
 ---
 
